@@ -13,6 +13,7 @@ import EditService from "@/pages/services/edit";
 import Quotes from "@/pages/quotes";
 import CreateQuote from "@/pages/quotes/create";
 import PrintQuote from "@/pages/quotes/print";
+import Reports from "@/pages/reports";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/orcamentos" component={Quotes} />
       <Route path="/orcamentos/criar" component={CreateQuote} />
       <Route path="/orcamentos/imprimir/:id" component={PrintQuote} />
+      <Route path="/relatorios" component={Reports} />
       <Route component={NotFound} />
     </Switch>
   );
