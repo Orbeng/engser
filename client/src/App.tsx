@@ -14,6 +14,7 @@ import Quotes from "@/pages/quotes";
 import CreateQuote from "@/pages/quotes/create";
 import PrintQuote from "@/pages/quotes/print";
 import Reports from "@/pages/reports";
+import Configuracoes from "@/pages/configuracoes";
 import AuthPage from "@/pages/auth-page";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ProtectedRoute } from "@/lib/protected-route";
@@ -33,6 +34,7 @@ function Router() {
       <ProtectedRoute path="/orcamentos/criar" component={CreateQuote} />
       <ProtectedRoute path="/orcamentos/imprimir/:id" component={PrintQuote} />
       <ProtectedRoute path="/relatorios" component={Reports} />
+      <ProtectedRoute path="/configuracoes" component={Configuracoes} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
