@@ -268,47 +268,47 @@ export function QuickSummary() {
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center justify-between bg-yellow-50 border border-yellow-100 rounded-md p-3">
+                <div className="flex items-center justify-between bg-yellow-50 border border-yellow-100 rounded-md p-2 sm:p-3">
                   <div className="flex items-center">
-                    <div className="p-2 bg-yellow-100 rounded-full mr-3">
-                      <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                    <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-full mr-2 sm:mr-3">
+                      <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-800">Serviços próximos do vencimento</div>
-                      <div className="text-sm text-gray-600">Serviços que expiram nos próximos 30 dias</div>
+                      <div className="font-medium text-gray-800 text-xs sm:text-base">Serviços próximos do vencimento</div>
+                      <div className="text-xs sm:text-sm text-gray-600 hidden xs:block">Serviços que expiram nos próximos 30 dias</div>
                     </div>
                   </div>
-                  <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                  <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs sm:text-sm whitespace-nowrap ml-1">
                     {getAlerts()[0]?.count || 0}
                   </Badge>
                 </div>
                 
-                <div className="flex items-center justify-between bg-red-50 border border-red-100 rounded-md p-3">
+                <div className="flex items-center justify-between bg-red-50 border border-red-100 rounded-md p-2 sm:p-3">
                   <div className="flex items-center">
-                    <div className="p-2 bg-red-100 rounded-full mr-3">
-                      <AlertTriangle className="h-5 w-5 text-red-500" />
+                    <div className="p-1.5 sm:p-2 bg-red-100 rounded-full mr-2 sm:mr-3">
+                      <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-800">Serviços vencidos</div>
-                      <div className="text-sm text-gray-600">Serviços com data de expiração ultrapassada</div>
+                      <div className="font-medium text-gray-800 text-xs sm:text-base">Serviços vencidos</div>
+                      <div className="text-xs sm:text-sm text-gray-600 hidden xs:block">Serviços com data de expiração ultrapassada</div>
                     </div>
                   </div>
-                  <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                  <Badge className="bg-red-100 text-red-800 hover:bg-red-100 text-xs sm:text-sm whitespace-nowrap ml-1">
                     {getAlerts()[1]?.count || 0}
                   </Badge>
                 </div>
 
-                <div className="flex items-center justify-between bg-green-50 border border-green-100 rounded-md p-3">
+                <div className="flex items-center justify-between bg-green-50 border border-green-100 rounded-md p-2 sm:p-3">
                   <div className="flex items-center">
-                    <div className="p-2 bg-green-100 rounded-full mr-3">
-                      <Check className="h-5 w-5 text-green-500" />
+                    <div className="p-1.5 sm:p-2 bg-green-100 rounded-full mr-2 sm:mr-3">
+                      <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-800">Serviços regulares</div>
-                      <div className="text-sm text-gray-600">Serviços com documentação em dia</div>
+                      <div className="font-medium text-gray-800 text-xs sm:text-base">Serviços regulares</div>
+                      <div className="text-xs sm:text-sm text-gray-600 hidden xs:block">Serviços com documentação em dia</div>
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-xs sm:text-sm whitespace-nowrap ml-1">
                     {Array.isArray(services) ? services.filter((s: any) => 
                       s.status === 'em_andamento' && 
                       new Date(s.expiryDate) > new Date(new Date().setMonth(new Date().getMonth() + 1))

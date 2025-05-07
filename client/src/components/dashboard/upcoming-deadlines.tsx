@@ -42,34 +42,34 @@ export function UpcomingDeadlines() {
 
   return (
     <div className="bg-white rounded-lg shadow-sm">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-semibold">Próximos Vencimentos</h2>
+      <div className="p-4 sm:p-6 border-b border-gray-200">
+        <h2 className="text-base sm:text-lg font-semibold">Próximos Vencimentos</h2>
       </div>
-      <div className="p-6">
+      <div className="p-3 sm:p-6">
         <ul className="space-y-3">
           {isLoading ? (
             Array(3).fill(0).map((_, index) => (
-              <li key={index} className="flex items-center space-x-3">
-                <Skeleton className="h-10 w-10 rounded-full" />
+              <li key={index} className="flex items-center space-x-2 sm:space-x-3">
+                <Skeleton className="h-8 w-8 sm:h-10 sm:w-10 rounded-full" />
                 <div className="min-w-0 flex-1">
-                  <Skeleton className="h-4 w-48 mb-2" />
-                  <Skeleton className="h-3 w-36" />
+                  <Skeleton className="h-3 sm:h-4 w-36 sm:w-48 mb-1 sm:mb-2" />
+                  <Skeleton className="h-2.5 sm:h-3 w-28 sm:w-36" />
                 </div>
-                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-5 sm:h-6 w-14 sm:w-16 rounded-full" />
               </li>
             ))
           ) : upcomingDeadlines && upcomingDeadlines.length > 0 ? (
             upcomingDeadlines.map((deadline: any) => {
               const daysRemaining = getDaysRemaining(deadline.expiryDate);
               return (
-                <li key={deadline.id} className="flex items-center space-x-3">
+                <li key={deadline.id} className="flex items-center space-x-2 sm:space-x-3">
                   <div className={cn(
-                    "flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center",
+                    "flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center",
                     getDeadlineIconBg(daysRemaining)
                   )}>
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
-                      className={cn("h-5 w-5", getDeadlineIconColor(daysRemaining))}
+                      className={cn("h-4 w-4 sm:h-5 sm:w-5", getDeadlineIconColor(daysRemaining))}
                       viewBox="0 0 20 20" 
                       fill="currentColor"
                     >
@@ -81,14 +81,14 @@ export function UpcomingDeadlines() {
                     </svg>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium truncate">{deadline.description}</p>
-                    <p className="text-sm text-neutral-medium">
+                    <p className="text-xs sm:text-sm font-medium truncate">{deadline.description}</p>
+                    <p className="text-xs sm:text-sm text-neutral-medium truncate">
                       {deadline.company.name} - {formatDate(deadline.expiryDate)}
                     </p>
                   </div>
                   <div>
                     <span className={cn(
-                      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+                      "inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap",
                       getDeadlineColor(daysRemaining)
                     )}>
                       {daysRemaining} {daysRemaining === 1 ? 'dia' : 'dias'}
@@ -98,7 +98,7 @@ export function UpcomingDeadlines() {
               );
             })
           ) : (
-            <li className="text-center py-4 text-neutral-dark">
+            <li className="text-center py-4 text-neutral-dark text-sm">
               Nenhum vencimento próximo
             </li>
           )}

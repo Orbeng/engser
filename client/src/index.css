@@ -85,10 +85,46 @@
   color: hsl(var(--primary));
 }
 
+
+
+/* Custom responsive styles */
 @media (max-width: 768px) {
   .sidebar-expanded {
     width: 100%;
     position: fixed;
     z-index: 50;
+  }
+}
+
+/* Mobile-first design adjustments */
+@media (max-width: 640px) {
+  .mobile-card {
+    padding: 0.75rem !important;
+  }
+  
+  .mobile-padding {
+    padding: 0.5rem !important;
+  }
+  
+  .mobile-text-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  .mobile-text-xs {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Improved touch targets on mobile */
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  a {
+    min-height: 2.5rem;
+  }
+  
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
