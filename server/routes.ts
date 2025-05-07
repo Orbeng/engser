@@ -233,6 +233,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Quote endpoints
+  app.get(`${apiPrefix}/quotes/all`, async (req, res) => {
+    try {
+      const quotes = await storage.getAllQuotes();
+      res.json(quotes);
+    } catch (error) {
+      console.error("Error fetching all quotes:", error);
+      res.status(500).json({ message: "Erro ao buscar orçamentos" });
+    }
+  });
+  
   app.get(`${apiPrefix}/quotes`, async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
