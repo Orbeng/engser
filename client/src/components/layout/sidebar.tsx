@@ -12,18 +12,18 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
   return (
     <div 
       className={cn(
-        "w-64 bg-white shadow-lg fixed h-full transition-all md:relative z-30",
-        expanded ? "left-0" : "-left-64 md:left-0"
+        "w-64 bg-white shadow-lg fixed h-full transition-all duration-300 md:relative z-30",
+        expanded ? "left-0" : "-left-64 md:left-0 md:w-16 lg:w-64"
       )}
       data-expanded={expanded}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-hidden">
         <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" viewBox="0 0 20 20" fill="currentColor">
+          <div className="flex items-center justify-center md:justify-center lg:justify-start space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.504 1.132a1 1 0 01.992 0l1.75 1a1 1 0 11-.992 1.736L10 3.152l-1.254.716a1 1 0 11-.992-1.736l1.75-1zM5.618 4.504a1 1 0 01-.372 1.364L5.016 6l.23.132a1 1 0 11-.992 1.736L4 7.723V8a1 1 0 01-2 0V6a.996.996 0 01.52-.878l1.734-.99a1 1 0 011.364.372zm8.764 0a1 1 0 011.364-.372l1.733.99A1.002 1.002 0 0118 6v2a1 1 0 11-2 0v-.277l-.254.145a1 1 0 11-.992-1.736l.23-.132-.23-.132a1 1 0 01-.372-1.364zm-7 4a1 1 0 011.364-.372L10 8.848l1.254-.716a1 1 0 11.992 1.736L11 10.58V12a1 1 0 11-2 0v-1.42l-1.246-.712a1 1 0 01-.372-1.364zM3 11a1 1 0 011 1v1.42l1.246.712a1 1 0 11-.992 1.736l-1.75-1A1 1 0 012 14v-2a1 1 0 011-1zm14 0a1 1 0 011 1v2a1 1 0 01-.504.868l-1.75 1a1 1 0 11-.992-1.736L16 13.42V12a1 1 0 011-1zm-9.618 5.504a1 1 0 011.364-.372l.254.145V16a1 1 0 112 0v.277l.254-.145a1 1 0 11.992 1.736l-1.735.992a.995.995 0 01-1.022 0l-1.735-.992a1 1 0 01-.372-1.364z" clipRule="evenodd" />
             </svg>
-            <h1 className="text-xl font-semibold text-primary">EngenhariaApp</h1>
+            <h1 className="text-xl font-semibold text-primary hidden md:hidden lg:block whitespace-nowrap">EngenhariaApp</h1>
           </div>
         </div>
         
@@ -45,7 +45,7 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
                   </svg>
                 </span>
-                Dashboard
+                <span className="hidden md:hidden lg:inline">Dashboard</span>
               </Link>
             </li>
             <li>
@@ -63,7 +63,7 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
                   </svg>
                 </span>
-                Empresas
+                <span className="hidden md:hidden lg:inline">Empresas</span>
               </Link>
             </li>
             <li>
@@ -81,7 +81,7 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                   </svg>
                 </span>
-                Serviços
+                <span className="hidden md:hidden lg:inline">Serviços</span>
               </Link>
             </li>
             <li>
@@ -99,7 +99,7 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                   </svg>
                 </span>
-                Orçamentos
+                <span className="hidden md:hidden lg:inline">Orçamentos</span>
               </Link>
             </li>
             <li>
