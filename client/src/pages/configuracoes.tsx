@@ -16,6 +16,7 @@ import { useLocation } from "wouter";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { useMobile } from "@/hooks/use-mobile";
+import { Building2, FileText, Clock, Plus, Clipboard, Users, BarChart4 } from "lucide-react";
 
 const perfilFormSchema = z.object({
   name: z.string().min(2, { message: "Nome deve ter pelo menos 2 caracteres" }),
@@ -120,39 +121,38 @@ export default function Configuracoes() {
             <p className="text-neutral-dark">Gerencie suas preferências e informações de perfil</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <Card className="lg:col-span-1">
+          <div className="flex flex-col gap-6 max-w-3xl mx-auto">
+            <Card>
               <CardHeader>
                 <CardTitle>Opções</CardTitle>
                 <CardDescription>Gerencie suas configurações</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   <Button 
                     variant={tab === "perfil" ? "default" : "outline"} 
-                    className="w-full justify-start"
+                    className="min-w-28"
                     onClick={() => setTab("perfil")}
                   >
                     Perfil
                   </Button>
                   <Button 
                     variant={tab === "senha" ? "default" : "outline"} 
-                    className="w-full justify-start"
+                    className="min-w-28"
                     onClick={() => setTab("senha")}
                   >
                     Alterar Senha
                   </Button>
                   <Button 
                     variant={tab === "preferencias" ? "default" : "outline"} 
-                    className="w-full justify-start"
+                    className="min-w-28"
                     onClick={() => setTab("preferencias")}
                   >
                     Preferências
                   </Button>
-                  <Separator className="my-2" />
                   <Button 
                     variant="destructive" 
-                    className="w-full justify-start"
+                    className="min-w-28"
                     onClick={handleLogout}
                   >
                     Sair
@@ -161,7 +161,7 @@ export default function Configuracoes() {
               </CardContent>
             </Card>
 
-            <div className="lg:col-span-3">
+            <div>
               {tab === "perfil" && (
                 <Card>
                   <CardHeader>
@@ -364,6 +364,70 @@ export default function Configuracoes() {
                 </Card>
               )}
             </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Ações Rápidas</CardTitle>
+                <CardDescription>Acesse as principais funcionalidades do sistema</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  <Button 
+                    variant="outline" 
+                    className="h-auto flex flex-col items-center justify-center gap-2 py-4"
+                    onClick={() => navigate("/empresas/criar")}
+                  >
+                    <Building2 className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Nova Empresa</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="h-auto flex flex-col items-center justify-center gap-2 py-4"
+                    onClick={() => navigate("/servicos/criar")}
+                  >
+                    <FileText className="h-6 w-6 text-orange-500" />
+                    <span className="text-sm font-medium">Novo Serviço</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="h-auto flex flex-col items-center justify-center gap-2 py-4"
+                    onClick={() => navigate("/orcamentos/criar")}
+                  >
+                    <Clipboard className="h-6 w-6 text-green-500" />
+                    <span className="text-sm font-medium">Novo Orçamento</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="h-auto flex flex-col items-center justify-center gap-2 py-4"
+                    onClick={() => navigate("/relatorios")}
+                  >
+                    <BarChart4 className="h-6 w-6 text-purple-500" />
+                    <span className="text-sm font-medium">Relatórios</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="h-auto flex flex-col items-center justify-center gap-2 py-4"
+                    onClick={() => navigate("/empresas")}
+                  >
+                    <Users className="h-6 w-6 text-blue-500" />
+                    <span className="text-sm font-medium">Empresas</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="h-auto flex flex-col items-center justify-center gap-2 py-4"
+                    onClick={() => navigate("/servicos")}
+                  >
+                    <Clock className="h-6 w-6 text-amber-500" />
+                    <span className="text-sm font-medium">Serviços</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>
