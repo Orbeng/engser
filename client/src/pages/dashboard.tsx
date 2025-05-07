@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentServices } from "@/components/dashboard/recent-services";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { UpcomingDeadlines } from "@/components/dashboard/upcoming-deadlines";
+import { QuickSummary } from "@/components/dashboard/quick-summary";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -109,6 +110,8 @@ export default function Dashboard() {
               </>
             ) : null}
           </div>
+
+          <QuickSummary />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
