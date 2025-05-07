@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { z } from "zod";
@@ -76,10 +76,11 @@ export default function AuthPage() {
   } = useAuth();
 
   // Redirecionar se já estiver autenticado
-  if (user) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // Formulário de login
   const loginForm = useForm<LoginFormValues>({
