@@ -146,10 +146,10 @@ export function QuickSummary() {
       </CardHeader>
       <CardContent className="pt-4">
         <Tabs value={summaryType} onValueChange={setSummaryType} className="w-full">
-          <TabsList className="mb-4 w-full justify-start">
-            <TabsTrigger value="status">Status</TabsTrigger>
-            <TabsTrigger value="financial">Financeiro</TabsTrigger>
-            <TabsTrigger value="alerts">Alertas</TabsTrigger>
+          <TabsList className="mb-4 w-full grid grid-cols-3 md:flex md:justify-start">
+            <TabsTrigger value="status" className="text-xs sm:text-sm">Status</TabsTrigger>
+            <TabsTrigger value="financial" className="text-xs sm:text-sm">Financeiro</TabsTrigger>
+            <TabsTrigger value="alerts" className="text-xs sm:text-sm">Alertas</TabsTrigger>
           </TabsList>
           
           <TabsContent value="status" className="space-y-4">
@@ -211,37 +211,37 @@ export function QuickSummary() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-md p-3">
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-gray-50 rounded-md p-2 sm:p-3">
                     <div className="text-xs font-medium text-gray-500 mb-1">Faturamento total</div>
-                    <div className="text-xl font-semibold">{formatCurrency(getFinancialSummary().totalRevenue)}</div>
+                    <div className="text-lg sm:text-xl font-semibold">{formatCurrency(getFinancialSummary().totalRevenue)}</div>
                   </div>
-                  <div className="bg-gray-50 rounded-md p-3">
+                  <div className="bg-gray-50 rounded-md p-2 sm:p-3">
                     <div className="text-xs font-medium text-gray-500 mb-1">Serviços ativos</div>
-                    <div className="text-xl font-semibold">{formatCurrency(getFinancialSummary().activeServicesValue)}</div>
+                    <div className="text-lg sm:text-xl font-semibold">{formatCurrency(getFinancialSummary().activeServicesValue)}</div>
                   </div>
-                  <div className="bg-gray-50 rounded-md p-3">
+                  <div className="bg-gray-50 rounded-md p-2 sm:p-3">
                     <div className="text-xs font-medium text-gray-500 mb-1">Orçamentos pendentes</div>
-                    <div className="text-xl font-semibold">{formatCurrency(getFinancialSummary().pendingQuotesValue)}</div>
+                    <div className="text-lg sm:text-xl font-semibold">{formatCurrency(getFinancialSummary().pendingQuotesValue)}</div>
                   </div>
-                  <div className="bg-gray-50 rounded-md p-3">
+                  <div className="bg-gray-50 rounded-md p-2 sm:p-3">
                     <div className="text-xs font-medium text-gray-500 mb-1">Valor médio por orçamento</div>
-                    <div className="text-xl font-semibold">{formatCurrency(getFinancialSummary().avgQuoteValue)}</div>
+                    <div className="text-lg sm:text-xl font-semibold">{formatCurrency(getFinancialSummary().avgQuoteValue)}</div>
                   </div>
                 </div>
                 
-                <div className="flex justify-between pt-2">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-2 pt-2">
                   <div className="flex items-center">
-                    <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                    <span className="text-sm text-gray-700">Taxa de aprovação: {
+                    <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 mr-1" />
+                    <span className="text-xs sm:text-sm text-gray-700">Taxa de aprovação: {
                       quotes && quotes.length > 0 
                         ? Math.round((quotes.filter((q: any) => q.status === 'aprovado').length / quotes.length) * 100)
                         : 0
                     }%</span>
                   </div>
                   <div className="flex items-center">
-                    <TrendingDown className="h-4 w-4 text-red-500 mr-1" />
-                    <span className="text-sm text-gray-700">Taxa de rejeição: {
+                    <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 mr-1" />
+                    <span className="text-xs sm:text-sm text-gray-700">Taxa de rejeição: {
                       quotes && quotes.length > 0 
                         ? Math.round((quotes.filter((q: any) => q.status === 'rejeitado').length / quotes.length) * 100)
                         : 0

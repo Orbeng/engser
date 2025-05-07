@@ -22,29 +22,29 @@ export function StatsCard({
   const isPositiveChange = changePercentage && changePercentage > 0;
   
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-neutral-dark text-sm font-medium">{title}</p>
-          <p className="text-2xl font-bold mt-1">{value}</p>
+          <p className="text-neutral-dark text-xs sm:text-sm font-medium">{title}</p>
+          <p className="text-xl sm:text-2xl font-bold mt-1">{value}</p>
         </div>
-        <div className={cn("p-2 rounded-lg", iconBgColor)}>
-          <div className={cn("h-6 w-6", iconColor)}>
+        <div className={cn("p-1.5 sm:p-2 rounded-lg", iconBgColor)}>
+          <div className={cn("h-5 w-5 sm:h-6 sm:w-6", iconColor)}>
             {icon}
           </div>
         </div>
       </div>
       {changePercentage !== undefined && (
-        <div className="mt-4 flex items-center">
+        <div className="mt-3 sm:mt-4 flex flex-wrap sm:flex-nowrap items-center">
           <span 
             className={cn(
-              "flex items-center text-sm",
+              "flex items-center text-xs sm:text-sm",
               isPositiveChange ? "text-status-success" : "text-status-error"
             )}
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-4 w-4 mr-1" 
+              className="h-3 w-3 sm:h-4 sm:w-4 mr-1" 
               viewBox="0 0 20 20" 
               fill="currentColor"
             >
@@ -64,7 +64,7 @@ export function StatsCard({
             </svg>
             {Math.abs(changePercentage)}%
           </span>
-          <span className="text-neutral-medium text-sm ml-2">{changeText}</span>
+          <span className="text-neutral-medium text-xs sm:text-sm ml-2">{changeText}</span>
         </div>
       )}
     </div>

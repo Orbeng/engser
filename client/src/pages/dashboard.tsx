@@ -29,7 +29,7 @@ export default function Dashboard() {
     <div className="flex min-h-screen relative">
       <Sidebar expanded={sidebarExpanded} onToggle={toggleSidebar} />
       
-      <div className={`flex-1 transition-all ${sidebarExpanded ? "ml-0 md:ml-64" : "ml-0"}`}>
+      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? "ml-0 md:ml-16 lg:ml-64" : "ml-0"}`}>
         <Topbar onMenuToggle={toggleSidebar} />
         
         <main className="p-4 md:p-6 bg-gray-100">
