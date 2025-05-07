@@ -77,46 +77,74 @@ export default function Reports() {
   };
 
   const getQuotesData = () => {
-    if (!quotes) return {};
-    
-    // Dados para o gráfico de status de orçamentos
-    const pendentes = quotes.filter((q: any) => q.status === 'pendente').length || 0;
-    const aprovados = quotes.filter((q: any) => q.status === 'aprovado').length || 0;
-    const rejeitados = quotes.filter((q: any) => q.status === 'rejeitado').length || 0;
-    
-    return [
-      { name: 'Pendentes', value: pendentes },
-      { name: 'Aprovados', value: aprovados },
-      { name: 'Rejeitados', value: rejeitados }
+    if (!quotes) return [
+      { name: 'Pendentes', value: 0 },
+      { name: 'Aprovados', value: 0 },
+      { name: 'Rejeitados', value: 0 }
     ];
+    
+    try {
+      // Dados para o gráfico de status de orçamentos
+      const pendentes = Array.isArray(quotes) ? quotes.filter((q: any) => q.status === 'pendente').length || 0 : 0;
+      const aprovados = Array.isArray(quotes) ? quotes.filter((q: any) => q.status === 'aprovado').length || 0 : 0;
+      const rejeitados = Array.isArray(quotes) ? quotes.filter((q: any) => q.status === 'rejeitado').length || 0 : 0;
+      
+      return [
+        { name: 'Pendentes', value: pendentes },
+        { name: 'Aprovados', value: aprovados },
+        { name: 'Rejeitados', value: rejeitados }
+      ];
+    } catch (error) {
+      console.error("Erro ao processar dados dos orçamentos:", error);
+      return [
+        { name: 'Pendentes', value: 0 },
+        { name: 'Aprovados', value: 0 },
+        { name: 'Rejeitados', value: 0 }
+      ];
+    }
   };
 
   const getFinancialData = () => {
-    if (!quotes || !companies) return [];
+    if (!quotes || !companies) return [
+      { name: 'Sem dados', value: 0 }
+    ];
     
-    // Dados para o gráfico de faturamento por empresa (top 5)
-    const financialByCompany: Record<string, number> = {};
-    
-    quotes.forEach((quote: any) => {
-      if (quote.status === 'aprovado' && quote.companyId) {
-        const companyId = quote.companyId.toString();
-        if (!financialByCompany[companyId]) {
-          financialByCompany[companyId] = 0;
-        }
-        financialByCompany[companyId] += parseFloat(quote.totalValue || 0);
+    try {
+      // Verificar se os dados são arrays
+      if (!Array.isArray(quotes) || !Array.isArray(companies)) {
+        return [{ name: 'Sem dados', value: 0 }];
       }
-    });
-    
-    return Object.entries(financialByCompany)
-      .map(([companyId, value]) => {
-        const company = companies.find((c: any) => c.id.toString() === companyId);
-        return {
-          name: company ? company.name : 'Desconhecida',
-          value
-        };
-      })
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 5);
+      
+      // Dados para o gráfico de faturamento por empresa (top 5)
+      const financialByCompany: Record<string, number> = {};
+      
+      quotes.forEach((quote: any) => {
+        if (quote.status === 'aprovado' && quote.companyId) {
+          const companyId = quote.companyId.toString();
+          if (!financialByCompany[companyId]) {
+            financialByCompany[companyId] = 0;
+          }
+          financialByCompany[companyId] += parseFloat(quote.totalValue || 0);
+        }
+      });
+      
+      const result = Object.entries(financialByCompany)
+        .map(([companyId, value]) => {
+          const company = companies.find((c: any) => c.id.toString() === companyId);
+          return {
+            name: company ? company.name : 'Desconhecida',
+            value
+          };
+        })
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+        
+      // Se não houver dados, retornar um item padrão
+      return result.length > 0 ? result : [{ name: 'Sem dados', value: 0 }];
+    } catch (error) {
+      console.error("Erro ao processar dados financeiros:", error);
+      return [{ name: 'Erro ao processar dados', value: 0 }];
+    }
   };
 
   return (
@@ -126,10 +154,19 @@ export default function Reports() {
           <h1 className="text-2xl font-bold text-gray-900">Relatórios</h1>
           <p className="text-gray-600">Visualize dados e estatísticas sobre os serviços e orçamentos</p>
         </div>
-        <Button variant="outline" className="flex items-center gap-2">
-          <Download className="h-4 w-4" />
-          Exportar relatório
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => window.location.href = "/"} className="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+              <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+            </svg>
+            Voltar para Dashboard
+          </Button>
+          <Button variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Exportar relatório
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -209,12 +246,25 @@ export default function Reports() {
                 {servicesLoading ? (
                   <Skeleton className="w-full h-full" />
                 ) : (
-                  <div className="flex justify-center items-center h-full">
-                    <img 
-                      src="https://placehold.co/600x300/e2e8f0/475569?text=Gráfico+de+Serviços&font=roboto" 
-                      alt="Gráfico de Serviços"
-                      className="max-w-full max-h-full object-contain rounded-md"
-                    />
+                  <div className="w-full h-full p-4">
+                    <div className="text-sm text-gray-500 mb-2">Serviços por mês</div>
+                    <div className="flex flex-col h-[250px] justify-end">
+                      <div className="flex items-end h-[200px] space-x-3">
+                        {getServicesData().map((item, index) => (
+                          <div key={index} className="flex flex-col items-center">
+                            <div className="text-xs text-gray-600 mb-1">{item.value}</div>
+                            <div 
+                              className="bg-blue-500 w-12 rounded-t-md" 
+                              style={{ 
+                                height: `${(item.value / 12) * 100}%`,
+                                minHeight: '20px'
+                              }}
+                            ></div>
+                            <div className="text-xs text-gray-600 mt-1 w-16 text-center truncate">{item.name}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -310,12 +360,28 @@ export default function Reports() {
                 {quotesLoading ? (
                   <Skeleton className="w-full h-full" />
                 ) : (
-                  <div className="flex justify-center items-center h-full">
-                    <img 
-                      src="https://placehold.co/600x300/e2e8f0/475569?text=Gráfico+de+Orçamentos&font=roboto" 
-                      alt="Gráfico de Orçamentos"
-                      className="max-w-full max-h-full object-contain rounded-md"
-                    />
+                  <div className="w-full h-full p-4">
+                    <div className="text-sm text-gray-500 mb-2">Status dos orçamentos</div>
+                    <div className="flex h-full justify-center items-center">
+                      <div className="flex items-center space-x-8">
+                        {getQuotesData().map((item, index) => (
+                          <div key={index} className="flex flex-col items-center">
+                            <div 
+                              className="rounded-full mb-2" 
+                              style={{ 
+                                width: `${Math.max(item.value * 10, 50)}px`, 
+                                height: `${Math.max(item.value * 10, 50)}px`,
+                                backgroundColor: 
+                                  item.name === 'Pendentes' ? '#f59e0b' : 
+                                  item.name === 'Aprovados' ? '#10b981' : '#ef4444'
+                              }}
+                            ></div>
+                            <div className="text-sm font-medium">{item.name}</div>
+                            <div className="text-xl font-bold">{item.value}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -425,12 +491,26 @@ export default function Reports() {
                 {quotesLoading || companiesLoading ? (
                   <Skeleton className="w-full h-full" />
                 ) : (
-                  <div className="flex justify-center items-center h-full">
-                    <img 
-                      src="https://placehold.co/600x300/e2e8f0/475569?text=Gráfico+Financeiro&font=roboto" 
-                      alt="Gráfico Financeiro"
-                      className="max-w-full max-h-full object-contain rounded-md"
-                    />
+                  <div className="w-full h-full p-4">
+                    <div className="text-sm text-gray-500 mb-2">Faturamento por empresa (Top 5)</div>
+                    <div className="flex flex-col space-y-4 mt-4">
+                      {getFinancialData().map((item, index) => (
+                        <div key={index} className="w-full">
+                          <div className="flex justify-between mb-1">
+                            <span className="text-sm font-medium">{item.name}</span>
+                            <span className="text-sm font-medium">{formatCurrency(item.value)}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div 
+                              className="bg-blue-600 h-2.5 rounded-full" 
+                              style={{ 
+                                width: `${Math.min(100, (item.value / (getFinancialData()[0]?.value || 1)) * 100)}%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </CardContent>
