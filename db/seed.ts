@@ -1,10 +1,43 @@
 import { db } from "./index";
 import * as schema from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { scrypt } from "crypto";
+import { promisify } from "util";
+
+const scryptAsync = promisify(scrypt);
+
+// Função para gerar hash de senha para os seeds
+async function hashPassword(password: string) {
+  const salt = "2a4e6f8a0c2e4f6a8c0e2a4c6e8a0f2c"; // Salt fixo para seed
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
 
 async function seed() {
   try {
     console.log("Starting database seed...");
+
+    // Insert admin user
+    const existingUsers = await db.query.users.findMany();
+    
+    if (existingUsers.length === 0) {
+      console.log("Seeding admin user...");
+      
+      const hashedPassword = await hashPassword("admin123"); // Senha: admin123
+      
+      await db.insert(schema.users).values({
+        username: "admin",
+        password: hashedPassword,
+        name: "Administrador",
+        email: "admin@exemplo.com",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+      
+      console.log("Admin user seeded successfully!");
+    } else {
+      console.log("Users already exist, skipping seed.")
+    }
 
     // Insert companies
     const existingCompanies = await db.query.companies.findMany();
