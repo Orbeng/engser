@@ -1,7 +1,8 @@
 import { useMobile } from "@/hooks/use-mobile";
 import { useLocation } from "wouter";
-import { Plus, FileText, Clipboard, BarChart4, Clock } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTopActions } from "@/hooks/use-top-actions";
 
 interface TopbarProps {
   onMenuToggle: () => void;
@@ -55,7 +56,7 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
             className="h-8 px-2"
             onClick={() => navigate("/servicos/criar")}
           >
-            <FileText className="h-4 w-4 mr-1 text-green-500" />
+            <Plus className="h-4 w-4 mr-1 text-green-500" />
             <span className="text-xs">Serviço</span>
           </Button>
           
@@ -65,18 +66,8 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
             className="h-8 px-2"
             onClick={() => navigate("/orcamentos/criar")}
           >
-            <Clipboard className="h-4 w-4 mr-1 text-amber-500" />
+            <Plus className="h-4 w-4 mr-1 text-amber-500" />
             <span className="text-xs">Orçamento</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 px-2"
-            onClick={() => navigate("/servicos")}
-          >
-            <Clock className="h-4 w-4 mr-1 text-blue-500" />
-            <span className="text-xs">Serviços</span>
           </Button>
         </div>
       </div>

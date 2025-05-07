@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { StatsCard } from "@/components/dashboard/stats-card";
-import { QuickActions } from "@/components/dashboard/quick-actions";
 import { UpcomingDeadlines } from "@/components/dashboard/upcoming-deadlines";
 import { QuickSummary } from "@/components/dashboard/quick-summary";
 import { useQuery } from "@tanstack/react-query";
@@ -119,14 +118,8 @@ export default function Dashboard() {
 
           <QuickSummary />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <UpcomingDeadlines />
-            </div>
-
-            <div className="lg:col-span-1">
-              <QuickActions />
-            </div>
+          <div className="grid grid-cols-1 gap-6">
+            <UpcomingDeadlines />
           </div>
         </main>
       </div>

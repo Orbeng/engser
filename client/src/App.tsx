@@ -19,6 +19,7 @@ import AuthPage from "@/pages/auth-page";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
+import { TopActionsProvider } from "@/hooks/use-top-actions";
 
 function Router() {
   return (
@@ -46,8 +47,10 @@ function App() {
     <ThemeProvider defaultTheme="light">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Router />
-          <Toaster />
+          <TopActionsProvider>
+            <Router />
+            <Toaster />
+          </TopActionsProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
