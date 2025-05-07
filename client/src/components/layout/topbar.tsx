@@ -10,7 +10,8 @@ interface TopbarProps {
 
 export function Topbar({ onMenuToggle }: TopbarProps) {
   const isMobile = useMobile();
-  const [_, navigate] = useLocation();
+  const [location, navigate] = useLocation();
+  const { showTopActions } = useTopActions();
 
   return (
     <header className="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-20">
@@ -39,37 +40,39 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
           </div>
         </div>
         
-        <div className="hidden md:flex space-x-1">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 px-2"
-            onClick={() => navigate("/empresas/criar")}
-          >
-            <Plus className="h-4 w-4 mr-1 text-primary" />
-            <span className="text-xs">Empresa</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 px-2"
-            onClick={() => navigate("/servicos/criar")}
-          >
-            <Plus className="h-4 w-4 mr-1 text-green-500" />
-            <span className="text-xs">Serviço</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 px-2"
-            onClick={() => navigate("/orcamentos/criar")}
-          >
-            <Plus className="h-4 w-4 mr-1 text-amber-500" />
-            <span className="text-xs">Orçamento</span>
-          </Button>
-        </div>
+        {location === "/" && (
+          <div className="hidden md:flex space-x-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 px-2"
+              onClick={() => navigate("/empresas/criar")}
+            >
+              <Plus className="h-4 w-4 mr-1 text-primary" />
+              <span className="text-xs">Empresa</span>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 px-2"
+              onClick={() => navigate("/servicos/criar")}
+            >
+              <Plus className="h-4 w-4 mr-1 text-green-500" />
+              <span className="text-xs">Serviço</span>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 px-2"
+              onClick={() => navigate("/orcamentos/criar")}
+            >
+              <Plus className="h-4 w-4 mr-1 text-amber-500" />
+              <span className="text-xs">Orçamento</span>
+            </Button>
+          </div>
+        )}
       </div>
       
       <div className="flex-1 hidden md:flex justify-center">
