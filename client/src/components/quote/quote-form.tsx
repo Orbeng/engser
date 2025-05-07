@@ -77,7 +77,7 @@ export function QuoteForm({ defaultValues, onSubmit, isSubmitting = false }: Quo
           description: "",
           quantity: 1,
           unitValue: 0,
-          serviceId: "",
+          serviceId: "custom",
         }
       ],
     },
@@ -112,7 +112,7 @@ export function QuoteForm({ defaultValues, onSubmit, isSubmitting = false }: Quo
 
   // When a service is selected, update the item description and value
   const handleServiceChange = (serviceId: string, index: number) => {
-    if (!serviceId || serviceId === "") {
+    if (!serviceId || serviceId === "custom") {
       form.setValue(`items.${index}.description`, "");
       form.setValue(`items.${index}.unitValue`, 0);
       return;
@@ -336,7 +336,7 @@ export function QuoteForm({ defaultValues, onSubmit, isSubmitting = false }: Quo
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="">Serviço personalizado</SelectItem>
+                                <SelectItem value="custom">Serviço personalizado</SelectItem>
                                 {services && services.map((service: any) => (
                                   <SelectItem key={service.id} value={service.id.toString()}>
                                     {service.art} - {service.description.substring(0, 30)}
@@ -436,7 +436,7 @@ export function QuoteForm({ defaultValues, onSubmit, isSubmitting = false }: Quo
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => append({ description: "", quantity: 1, unitValue: 0, serviceId: "" })}
+                onClick={() => append({ description: "", quantity: 1, unitValue: 0, serviceId: "custom" })}
                 className="mt-2"
               >
                 <Plus className="mr-2 h-4 w-4" />
