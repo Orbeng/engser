@@ -1,10 +1,104 @@
-import { db } from "@db";
+import { db, pool } from "@db";
 import * as schema from "@shared/schema";
-import { eq, and, desc, sql, gte, lte, like, or, lt } from "drizzle-orm";
+import { eq, and, desc, sql, gte, lte, like, or, lt, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { ZodError } from "zod-validation-error";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+
+// Configuração da store de sessão
+const PostgresSessionStore = connectPg(session);
 
 export const storage = {
+  // Armazenamento da sessão
+  sessionStore: new PostgresSessionStore({
+    pool,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
+
+  // Usuários
+  async getUserByUsername(username: string) {
+    return await db.query.users.findFirst({
+      where: eq(schema.users.username, username)
+    });
+  },
+
+  async getUser(id: number) {
+    return await db.query.users.findFirst({
+      where: eq(schema.users.id, id)
+    });
+  },
+
+  async createUser(data: schema.InsertUser) {
+    try {
+      const validatedData = schema.insertUserSchema.parse(data);
+      const [newUser] = await db.insert(schema.users)
+        .values({
+          ...validatedData,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        .returning();
+      
+      // Removendo a senha do objeto retornado por segurança
+      const { password, ...userWithoutPassword } = newUser;
+      return userWithoutPassword;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw { status: 400, message: "Dados inválidos", errors: error.errors };
+      }
+      throw error;
+    }
+  },
+
+  async updateUserLastLogin(id: number) {
+    return await db.update(schema.users)
+      .set({ lastLogin: new Date() })
+      .where(eq(schema.users.id, id))
+      .returning();
+  },
+
+  async storeResetToken(userId: number, token: string, expiry: Date) {
+    return await db.update(schema.users)
+      .set({ 
+        resetToken: token,
+        resetTokenExpiry: expiry,
+        updatedAt: new Date()
+      })
+      .where(eq(schema.users.id, userId))
+      .returning();
+  },
+
+  async getUserByResetToken(token: string) {
+    return await db.query.users.findFirst({
+      where: and(
+        eq(schema.users.resetToken, token),
+        gte(schema.users.resetTokenExpiry, new Date())
+      )
+    });
+  },
+
+  async updateUserPassword(userId: number, hashedPassword: string) {
+    return await db.update(schema.users)
+      .set({ 
+        password: hashedPassword,
+        updatedAt: new Date()
+      })
+      .where(eq(schema.users.id, userId))
+      .returning();
+  },
+
+  async clearResetToken(userId: number) {
+    return await db.update(schema.users)
+      .set({ 
+        resetToken: null,
+        resetTokenExpiry: null,
+        updatedAt: new Date()
+      })
+      .where(eq(schema.users.id, userId))
+      .returning();
+  },
   // Companies
   async getAllCompanies() {
     return await db.query.companies.findMany({

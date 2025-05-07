@@ -2,9 +2,13 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { serviceInsertSchema, companyInsertSchema, quoteInsertSchema, quoteItemInsertSchema } from "@shared/schema";
+import { serviceInsertSchema, companyInsertSchema, quoteInsertSchema, quoteItemInsertSchema, insertUserSchema } from "@shared/schema";
+import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configurar autenticação
+  setupAuth(app);
+  
   // API prefix
   const apiPrefix = "/api";
 

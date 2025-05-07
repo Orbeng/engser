@@ -14,22 +14,26 @@ import Quotes from "@/pages/quotes";
 import CreateQuote from "@/pages/quotes/create";
 import PrintQuote from "@/pages/quotes/print";
 import Reports from "@/pages/reports";
+import AuthPage from "@/pages/auth-page";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ProtectedRoute } from "@/lib/protected-route";
+import { AuthProvider } from "@/hooks/use-auth";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/empresas" component={Companies} />
-      <Route path="/empresas/criar" component={CreateCompany} />
-      <Route path="/empresas/editar/:id" component={EditCompany} />
-      <Route path="/servicos" component={Services} />
-      <Route path="/servicos/criar" component={CreateService} />
-      <Route path="/servicos/editar/:id" component={EditService} />
-      <Route path="/orcamentos" component={Quotes} />
-      <Route path="/orcamentos/criar" component={CreateQuote} />
-      <Route path="/orcamentos/imprimir/:id" component={PrintQuote} />
-      <Route path="/relatorios" component={Reports} />
+      <ProtectedRoute path="/" component={Dashboard} />
+      <ProtectedRoute path="/empresas" component={Companies} />
+      <ProtectedRoute path="/empresas/criar" component={CreateCompany} />
+      <ProtectedRoute path="/empresas/editar/:id" component={EditCompany} />
+      <ProtectedRoute path="/servicos" component={Services} />
+      <ProtectedRoute path="/servicos/criar" component={CreateService} />
+      <ProtectedRoute path="/servicos/editar/:id" component={EditService} />
+      <ProtectedRoute path="/orcamentos" component={Quotes} />
+      <ProtectedRoute path="/orcamentos/criar" component={CreateQuote} />
+      <ProtectedRoute path="/orcamentos/imprimir/:id" component={PrintQuote} />
+      <ProtectedRoute path="/relatorios" component={Reports} />
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -39,8 +43,10 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light">
       <QueryClientProvider client={queryClient}>
-        <Router />
-        <Toaster />
+        <AuthProvider>
+          <Router />
+          <Toaster />
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
