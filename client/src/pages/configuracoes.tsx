@@ -13,6 +13,9 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useLocation } from "wouter";
+import { Sidebar } from "@/components/layout/sidebar";
+import { Topbar } from "@/components/layout/topbar";
+import { useMobile } from "@/hooks/use-mobile";
 
 const perfilFormSchema = z.object({
   name: z.string().min(2, { message: "Nome deve ter pelo menos 2 caracteres" }),
@@ -40,9 +43,21 @@ type PreferencesFormValues = z.infer<typeof preferencesFormSchema>;
 
 export default function Configuracoes() {
   const [tab, setTab] = useState("perfil");
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
   const { toast } = useToast();
   const [_, navigate] = useLocation();
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const isMobile = useMobile();
+
+  const toggleSidebar = () => {
+    setSidebarExpanded(!sidebarExpanded);
+  };
+
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => navigate("/auth")
+    });
+  };
 
   const perfilForm = useForm<PerfilFormValues>({
     resolver: zodResolver(perfilFormSchema),
@@ -93,258 +108,265 @@ export default function Configuracoes() {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-primary">Configurações</h1>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <CardTitle>Opções</CardTitle>
-              <CardDescription>Gerencie suas configurações</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Button 
-                  variant={tab === "perfil" ? "default" : "outline"} 
-                  className="w-full justify-start"
-                  onClick={() => setTab("perfil")}
-                >
-                  Perfil
-                </Button>
-                <Button 
-                  variant={tab === "senha" ? "default" : "outline"} 
-                  className="w-full justify-start"
-                  onClick={() => setTab("senha")}
-                >
-                  Alterar Senha
-                </Button>
-                <Button 
-                  variant={tab === "preferencias" ? "default" : "outline"} 
-                  className="w-full justify-start"
-                  onClick={() => setTab("preferencias")}
-                >
-                  Preferências
-                </Button>
-                <Separator className="my-2" />
-                <Button 
-                  variant="destructive" 
-                  className="w-full justify-start"
-                  onClick={() => navigate("/auth")}
-                >
-                  Sair
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="lg:col-span-3">
-            {tab === "perfil" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Perfil</CardTitle>
-                  <CardDescription>Atualize suas informações de perfil</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...perfilForm}>
-                    <form onSubmit={perfilForm.handleSubmit(onPerfilSubmit)} className="space-y-4">
-                      <FormField
-                        control={perfilForm.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nome</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Seu nome" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={perfilForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>E-mail</FormLabel>
-                            <FormControl>
-                              <Input placeholder="seu.email@exemplo.com" type="email" {...field} value={field.value || ""} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit">Salvar alterações</Button>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-            )}
-
-            {tab === "senha" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Alterar Senha</CardTitle>
-                  <CardDescription>Atualize sua senha de acesso</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...senhaForm}>
-                    <form onSubmit={senhaForm.handleSubmit(onSenhaSubmit)} className="space-y-4">
-                      <FormField
-                        control={senhaForm.control}
-                        name="currentPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Senha atual</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Sua senha atual" type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={senhaForm.control}
-                        name="newPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nova senha</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Nova senha" type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={senhaForm.control}
-                        name="confirmPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Confirmar senha</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Confirme sua nova senha" type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit">Atualizar senha</Button>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-            )}
-
-            {tab === "preferencias" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Preferências</CardTitle>
-                  <CardDescription>Personalize sua experiência no sistema</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...preferencesForm}>
-                    <form onSubmit={preferencesForm.handleSubmit(onPreferencesSubmit)} className="space-y-6">
-                      <FormField
-                        control={preferencesForm.control}
-                        name="theme"
-                        render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormLabel>Tema</FormLabel>
-                            <FormControl>
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                className="flex flex-col space-y-1"
-                              >
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value="light" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">
-                                    Claro
-                                  </FormLabel>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value="dark" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">
-                                    Escuro
-                                  </FormLabel>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value="system" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">
-                                    Sistema
-                                  </FormLabel>
-                                </FormItem>
-                              </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={preferencesForm.control}
-                        name="notifications"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Notificações
-                              </FormLabel>
-                              <FormDescription>
-                                Receber notificações do sistema
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={preferencesForm.control}
-                        name="emailAlerts"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Alertas por e-mail
-                              </FormLabel>
-                              <FormDescription>
-                                Receber alertas por e-mail sobre atividades importantes
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <Button type="submit">Salvar preferências</Button>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-            )}
+    <div className="flex min-h-screen relative">
+      <Sidebar expanded={sidebarExpanded} onToggle={toggleSidebar} />
+      
+      <div className={`flex-1 transition-all ${sidebarExpanded ? "ml-0 md:ml-64" : "ml-0"}`}>
+        <Topbar onMenuToggle={toggleSidebar} />
+        
+        <main className="p-4 md:p-6 bg-gray-100">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-neutral-darker">Configurações</h1>
+            <p className="text-neutral-dark">Gerencie suas preferências e informações de perfil</p>
           </div>
-        </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <Card className="lg:col-span-1">
+              <CardHeader>
+                <CardTitle>Opções</CardTitle>
+                <CardDescription>Gerencie suas configurações</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Button 
+                    variant={tab === "perfil" ? "default" : "outline"} 
+                    className="w-full justify-start"
+                    onClick={() => setTab("perfil")}
+                  >
+                    Perfil
+                  </Button>
+                  <Button 
+                    variant={tab === "senha" ? "default" : "outline"} 
+                    className="w-full justify-start"
+                    onClick={() => setTab("senha")}
+                  >
+                    Alterar Senha
+                  </Button>
+                  <Button 
+                    variant={tab === "preferencias" ? "default" : "outline"} 
+                    className="w-full justify-start"
+                    onClick={() => setTab("preferencias")}
+                  >
+                    Preferências
+                  </Button>
+                  <Separator className="my-2" />
+                  <Button 
+                    variant="destructive" 
+                    className="w-full justify-start"
+                    onClick={handleLogout}
+                  >
+                    Sair
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="lg:col-span-3">
+              {tab === "perfil" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Perfil</CardTitle>
+                    <CardDescription>Atualize suas informações de perfil</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Form {...perfilForm}>
+                      <form onSubmit={perfilForm.handleSubmit(onPerfilSubmit)} className="space-y-4">
+                        <FormField
+                          control={perfilForm.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nome</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Seu nome" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={perfilForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>E-mail</FormLabel>
+                              <FormControl>
+                                <Input placeholder="seu.email@exemplo.com" type="email" {...field} value={field.value || ""} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit">Salvar alterações</Button>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              )}
+
+              {tab === "senha" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Alterar Senha</CardTitle>
+                    <CardDescription>Atualize sua senha de acesso</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Form {...senhaForm}>
+                      <form onSubmit={senhaForm.handleSubmit(onSenhaSubmit)} className="space-y-4">
+                        <FormField
+                          control={senhaForm.control}
+                          name="currentPassword"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Senha atual</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Sua senha atual" type="password" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={senhaForm.control}
+                          name="newPassword"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nova senha</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Nova senha" type="password" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={senhaForm.control}
+                          name="confirmPassword"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Confirmar senha</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Confirme sua nova senha" type="password" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit">Atualizar senha</Button>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              )}
+
+              {tab === "preferencias" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Preferências</CardTitle>
+                    <CardDescription>Personalize sua experiência no sistema</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Form {...preferencesForm}>
+                      <form onSubmit={preferencesForm.handleSubmit(onPreferencesSubmit)} className="space-y-6">
+                        <FormField
+                          control={preferencesForm.control}
+                          name="theme"
+                          render={({ field }) => (
+                            <FormItem className="space-y-3">
+                              <FormLabel>Tema</FormLabel>
+                              <FormControl>
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  className="flex flex-col space-y-1"
+                                >
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="light" />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      Claro
+                                    </FormLabel>
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="dark" />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      Escuro
+                                    </FormLabel>
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="system" />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      Sistema
+                                    </FormLabel>
+                                  </FormItem>
+                                </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={preferencesForm.control}
+                          name="notifications"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-base">
+                                  Notificações
+                                </FormLabel>
+                                <FormDescription>
+                                  Receber notificações do sistema
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={preferencesForm.control}
+                          name="emailAlerts"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-base">
+                                  Alertas por e-mail
+                                </FormLabel>
+                                <FormDescription>
+                                  Receber alertas por e-mail sobre atividades importantes
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <Button type="submit">Salvar preferências</Button>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        </main>
       </div>
-    </Layout>
+    </div>
   );
 }
