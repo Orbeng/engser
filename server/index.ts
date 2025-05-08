@@ -2,10 +2,42 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Configurar rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // limitar cada IP a 100 requisições por janela
+  standardHeaders: true, // Retorna rate limit info nos headers `RateLimit-*`
+  legacyHeaders: false, // Desabilita os headers `X-RateLimit-*`
+  message: { 
+    message: 'Muitas requisições, por favor tente novamente mais tarde.' 
+  }
+});
+
+// Aplicar rate limiting a rotas de autenticação para evitar ataques de força bruta
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 5, // limitar cada IP a 5 tentativas de login por hora
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { 
+    message: 'Muitas tentativas de login, tente novamente mais tarde.' 
+  }
+});
+
+// Aplicar limitadores a rotas específicas
+app.use('/api/login', authLimiter);
+app.use('/api/register', authLimiter);
+app.use('/api/reset-password', authLimiter);
+app.use('/api/reset-password-request', authLimiter);
+
+// Aplicar limitador global a todas as outras rotas de API
+app.use('/api', apiLimiter);
 
 // Adicionar headers de segurança com Helmet
 if (process.env.NODE_ENV === "production") {
