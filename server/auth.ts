@@ -49,7 +49,10 @@ export function setupAuth(app: Express) {
     cookie: {
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
-    }
+      httpOnly: true,
+      sameSite: 'strict'
+    },
+    name: 'sid' // Nome personalizado para o cookie (não usar o padrão 'connect.sid')
   };
 
   app.set("trust proxy", 1);
