@@ -5,13 +5,24 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
-import { User } from "@shared/schema";
+import { User as SchemaUser } from "@shared/schema";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "@db";
 
 declare global {
   namespace Express {
-    interface User extends User {}
+    // Define a interface User para o Express
+    interface User {
+      id: number;
+      username: string;
+      name: string;
+      email: string | null;
+      resetToken: string | null;
+      resetTokenExpiry: Date | null;
+      lastLogin: Date | null;
+      createdAt: Date;
+      updatedAt: Date;
+    }
   }
 }
 
@@ -143,6 +154,7 @@ export function setupAuth(app: Express) {
         }
         
         // Não incluir a senha na resposta
+        // @ts-ignore - Sabemos que user tem uma propriedade password
         const { password, ...userWithoutPassword } = user;
         
         res.status(201).json(userWithoutPassword);
@@ -155,7 +167,7 @@ export function setupAuth(app: Express) {
 
   // Rota de login
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: any, user: Express.User | false, info: { message: string } | undefined) => {
       if (err) {
         return next(err);
       }
