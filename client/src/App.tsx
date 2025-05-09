@@ -4,8 +4,8 @@ function App() {
   const [dados, setDados] = useState([]);
 
   useEffect(() => {
-    const url = ${process.env.REACT_APP_API_URL}/sua-rota-aqui; // engser-production.up.railway.app
-    fetch(engser-production.up.railway.app)
+    const url = `${process.env.REACT_APP_API_URL}/servicos`; //engser-production.up.railway.app
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setDados(data);
